@@ -41,34 +41,46 @@
                 </el-dialog>   
                 
                 
-                         <el-table
-                                    :data="relaciones"
-                                    border
-                                    style="width: 100%">
+                <el-table
+                :data="relaciones"
+                border
+                style="width: 100%">
 
-                                    <el-table-column                                  
-                                    label="Nombre">
-                                        <template slot-scope="object">
-                                              ${object.row.usuario.nombre}
-                                        </template>
-                                    </el-table-column>
+                    <el-table-column   
+                    prop="nombre"                               
+                    label="Nombre">
+                    </el-table-column>
 
-                                    <el-table-column
-                                    prop="apellido"
-                                    label="Apellido">
-                                    </el-table-column>
+                    <el-table-column
+                    prop="apellido"
+                    label="Apellido">
+                    </el-table-column>
 
-                                    <el-table-column
-                                        prop="edad"
-                                        label="Edad">
-                                    </el-table-column>
+                    <el-table-column
+                        prop="edad"
+                        label="Edad">
+                    </el-table-column>
 
-                                    <el-table-column
-                                        prop="telefono"
-                                        label="Teléfono">
-                                    </el-table-column>
-                                    
-                        </el-table> 
+                    <el-table-column
+                        prop="telefono"
+                        label="Teléfono">
+                    </el-table-column>
+
+                     <el-table-column
+                        label="Acción">
+                        <template slot-scope="object">
+                           <el-button
+                            size="mini"
+                            type="warning"
+                            @click="editarUsuario(object.row.id)">Editar</el-button>
+                            <el-button
+                            size="mini"
+                            type="danger"
+                            @click="eliminarUsuario(object.row.id)">Eliminar</el-button>
+                        </template>
+                    </el-table-column>
+                            
+                </el-table> 
      </div>
 
        
@@ -79,7 +91,7 @@
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script>
-        new Vue({
+        var vue = new Vue({
             el: '#App',
             data: {
                     visible: false,
@@ -92,6 +104,7 @@
                     relaciones:[]
             },
             mounted() {
+                this.obtenerRegistros();
 
                 
             },
@@ -108,17 +121,53 @@
                             this.$message({
                                 message: 'Usuario registrado exitosamente',
                                 type:'success'
-                            });
-                            } else{
-                                this.$message.error('No se puede registrar');
 
-                            }
+                            });
+                            this.obtenerRegistros();
+                        } else {
+                            this.$message.error('No se puede registrar');
+                        }
+                      
                     });                    
                 },
                 obtenerRegistros(){
                     $.get('obtenerRegistros')
+                    .done(res=>{
+                        this.relaciones = res;
+                        
+                    });
+                },
+                eliminarUsuario(usuario_id)
+                 {
+                    $.get( 'eliminarUsuario/' + usuario_id
+                    ).done(response => {
+                        if(response){
+                            this.$message({
+                                showClose: true,
+                                message: 'Usuario eliminado.',
+                                type: 'warning'
+                            });
+                            this.obtenerRegistros();
+                        }
+                    });
+                },
+                editarUsuario(usuario_id)
+                {   
+                    $.get( 'editarUsuario'/ + usuario_id
+                    ).done(res=>{
+                        this.usuario = res;
+                        console.log('usuario editado', this.usuario);
+                        this.visible = true;
+
+                    });
+                },
+                pasandoUsuario()
+                {
+                    if(this.usuario.id != null)
+                    {
+                        $.post('editarUsuario')
+                    }
                 }
-                
                 
             },
             delimiters: ['${','}']

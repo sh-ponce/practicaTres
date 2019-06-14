@@ -24,4 +24,31 @@ class RegistroPracThree extends Controller
             return "Usuario no registrado";
         }
     }
+
+    public function obtenerRegistros(Request $request)
+    {
+        return Relacion::all();
+    }
+    public function eliminarUsuario($id)
+    {
+        $usuario = Relacion::find($id);
+
+        if($usuario->delete())
+        return 'true';
+
+        return 'false';
+    }
+
+    public function editarUsuario(Request $request)
+    {
+        $data = $request->get('usuario');
+
+        $user = Relacion::find($data['id']);
+        $user->nombre = $data['nombre'];
+        $user->apellido = $data['apellido'];
+        $user->edad = $data['edad'];
+        $user->telefono = $data['telefono'];
+        $user->save();
+        return "true";
+    }
 }

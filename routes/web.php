@@ -17,3 +17,5 @@ Route::get('/', function () {
 
 Route::post('registrarUsuario','RegistroPracThree@registrarUsuario');
 Route::get('obtenerRegistros', 'RegistroPracThree@obtenerRegistros');
+Route::get('eliminarUsuario/{id}','RegistroPracThree@eliminarUsuario');
+Route::get('editarUsuario/{id})','RegistroPracThree@editarUsuario)');
